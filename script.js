@@ -3,13 +3,13 @@
 
 let myLibrary = []; // Declara un array vacío llamado myLibrary para almacenar los libros
 
-function createBook(title, author, pages, read) {
-  return {
-    title: title,
-    author: author,
-    pages: pages,
-    read: read,
-  };
+class Book {
+  constructor(title, author, pages, read) {
+    this.title = title;
+    this.author = author;
+    this.pages = pages;
+    this.read = read;
+  }
 }
 // Función createBook crea y devuelve un objeto de libro con las propiedades dadas
 
