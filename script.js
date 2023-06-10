@@ -1,8 +1,3 @@
-
-////hola prueba
-
-let myLibrary = []; // Declara un array vacío llamado myLibrary para almacenar los libros
-
 class Book {
   constructor(title, author, pages, read) {
     this.title = title;
@@ -11,72 +6,83 @@ class Book {
     this.read = read;
   }
 }
-// Función createBook crea y devuelve un objeto de libro con las propiedades dadas
 
-function addBook(title, author, pages, read) {
-  let newBook = createBook(title, author, pages, read); // Crea un nuevo libro usando la función createBook
-  myLibrary.push(newBook); // Agrega el nuevo libro al array myLibrary
-  displayBooks(); // Llama a la función displayBooks para mostrar los libros actualizados en pantalla
-}
+class Library {
+  constructor() {
+    this.myLibrary = [];
+  }
 
-function displayBooks() {
-  const booksGrid = document.getElementById('library'); // Obtiene el elemento con el ID 'library'
-  booksGrid.innerHTML = ''; // Limpia el contenido anterior del elemento 'library'
+  createBook(title, author, pages, read) {
+    return new Book(title, author, pages, read);
+  }
 
-  for (let i = 0; i < myLibrary.length; i++) {
-    const book = myLibrary[i]; // Obtiene el libro actual del array myLibrary
-    const bookCard = document.createElement('div'); // Crea un elemento <div> para representar la tarjeta del libro
-    bookCard.style.border = '1px solid black'; // Agrega un borde a la tarjeta del libro
+  addBook(title, author, pages, read) {
+    let newBook = this.createBook(title, author, pages, read);
+    this.myLibrary.push(newBook);
+    this.displayBooks();
+  }
 
-    const title = document.createElement('p'); // Crea un elemento <p> para mostrar el título del libro
-    const author = document.createElement('p'); // Crea un elemento <p> para mostrar el autor del libro
-    const pages = document.createElement('p'); // Crea un elemento <p> para mostrar las páginas del libro
-    const read = document.createElement('p'); // Crea un elemento <p> para mostrar el estado de lectura del libro
+  displayBooks() {
+    const booksGrid = document.getElementById('library');
+    booksGrid.innerHTML = '';
 
-    title.textContent = `Title: ${book.title}`; // Establece el texto del elemento 'title' con el título del libro
-    author.textContent = `Author: ${book.author}`; // Establece el texto del elemento 'author' con el autor del libro
-    pages.textContent = `Pages: ${book.pages}`; // Establece el texto del elemento 'pages' con el número de páginas del libro
-    read.textContent = `Read: ${book.read ? 'Yes' : 'No'}`; // Establece el texto del elemento 'read' con el estado de lectura del libro (Yes o No)
+    for (let i = 0; i < this.myLibrary.length; i++) {
+      const book = this.myLibrary[i];
+      const bookCard = document.createElement('div');
+      bookCard.style.border = '1px solid black';
 
-    bookCard.appendChild(title); // Agrega el elemento 'title' como hijo de la tarjeta del libro
-    bookCard.appendChild(author); // Agrega el elemento 'author' como hijo de la tarjeta del libro
-    bookCard.appendChild(pages); // Agrega el elemento 'pages' como hijo de la tarjeta del libro
-    bookCard.appendChild(read); // Agrega el elemento 'read' como hijo de la tarjeta del libro
+      const title = document.createElement('p');
+      const author = document.createElement('p');
+      const pages = document.createElement('p');
+      const read = document.createElement('p');
 
-    booksGrid.appendChild(bookCard); // Agrega la tarjeta del libro al elemento 'library'
+      title.textContent = `Title: ${book.title}`;
+      author.textContent = `Author: ${book.author}`;
+      pages.textContent = `Pages: ${book.pages}`;
+      read.textContent = `Read: ${book.read ? 'Yes' : 'No'}`;
+
+      bookCard.appendChild(title);
+      bookCard.appendChild(author);
+      bookCard.appendChild(pages);
+      bookCard.appendChild(read);
+
+      booksGrid.appendChild(bookCard);
+    }
+  }
+
+  handleFormSubmit(event) {
+    event.preventDefault();
+
+    const title = document.getElementById('titleInput').value;
+    const author = document.getElementById('authorInput').value;
+    const pages = document.getElementById('pagesInput').value;
+    const read = document.getElementById('readInput').checked;
+
+    if (title === '' || author === '' || pages === '') {
+      return;
+    }
+
+    this.addBook(title, author, pages, read);
+
+    document.getElementById('titleInput').value = '';
+    document.getElementById('authorInput').value = '';
+    document.getElementById('pagesInput').value = '';
+    document.getElementById('readInput').checked = false;
+
+    this.showBookForm();
+  }
+
+  showBookForm() {
+    const bookFormContainer = document.getElementById('bookFormContainer');
+    bookFormContainer.style.display = 'block';
+    bookFormContainer.style.border = '2px solid black';
   }
 }
 
-function handleFormSubmit(event) {
-  event.preventDefault(); // Evita que el formulario se envíe y la página se recargue
+const library = new Library();
 
-  const title = document.getElementById('titleInput').value; // Obtiene el valor del campo de entrada de título del formulario
-  const author = document.getElementById('authorInput').value; // Obtiene el valor del campo de entrada de autor del formulario
-  const pages = document.getElementById('pagesInput').value; // Obtiene el valor del campo de entrada de páginas del formulario
-  const read = document.getElementById('readInput').checked; // Obtiene el estado de lectura (true o false) del checkbox del formulario
+const addBookButton = document.getElementById('addBookButton');
+addBookButton.addEventListener('click', library.showBookForm.bind(library));
 
-  if (title === '' || author === '' || pages === '') {
-    return; // Si falta algún campo obligatorio (título, autor o páginas), retorna sin hacer nada
-  }
-
-  addBook(title, author, pages, read); // Llama a la función addBook para agregar un nuevo libro con los valores del formulario
-
-  document.getElementById('titleInput').value = ''; // Limpia el campo de entrada de título del formulario
-  document.getElementById('authorInput').value = ''; // Limpia el campo de entrada de autor del formulario
-  document.getElementById('pagesInput').value = ''; // Limpia el campo de entrada de páginas del formulario
-  document.getElementById('readInput').checked = false; // Desmarca el checkbox de lectura del formulario
-
-  showBookForm(); // Muestra el formulario después de agregar un libro
-}
-
-function showBookForm() {
-  const bookFormContainer = document.getElementById('bookFormContainer'); // Obtiene el contenedor del formulario
-  bookFormContainer.style.display = 'block'; // Muestra el contenedor del formulario estableciendo su propiedad 'display' en 'block'
-  bookFormContainer.style.border = '2px solid black'; // Agrega un borde al contenedor del formulario
-}
-
-const addBookButton = document.getElementById('addBookButton'); // Obtiene el botón "Add Book"
-addBookButton.addEventListener('click', showBookForm); // Agrega un event listener para mostrar el formulario al hacer clic en el botón
-
-const form = document.getElementById('bookForm'); // Obtiene el formulario
-form.addEventListener('submit', handleFormSubmit); // Agrega un event listener para manejar el envío del formulario y agregar un libro
+const form = document.getElementById('bookForm');
+form.addEventListener('submit', library.handleFormSubmit.bind(library));
